@@ -16,7 +16,6 @@
 package com.example.android.pets;
 
 import android.content.ContentValues;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
@@ -32,7 +31,6 @@ import android.widget.Toast;
 
 import com.example.android.pets.data.PetContract;
 import com.example.android.pets.data.PetContract.PetEntry;
-import com.example.android.pets.data.PetDbHelper;
 
 
 public class EditorActivity extends AppCompatActivity {
@@ -47,7 +45,6 @@ public class EditorActivity extends AppCompatActivity {
 
     private int mGender = 0;
 
-    private PetDbHelper mDbHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,7 +57,7 @@ public class EditorActivity extends AppCompatActivity {
         mGenderSpinner = (Spinner) findViewById(R.id.spinner_gender);
 
         setupSpinner();
-        mDbHelper = new PetDbHelper(this);
+
     }
 
 
@@ -96,7 +93,6 @@ public class EditorActivity extends AppCompatActivity {
     }
 
     private void insertPet(){
-        SQLiteDatabase db = mDbHelper.getWritableDatabase();
 
         String name = mNameEditText.getText().toString().trim();
         String breed = mBreedEditText.getText().toString().trim();
@@ -108,9 +104,9 @@ public class EditorActivity extends AppCompatActivity {
         values.put(PetContract.PetEntry.COLUMN_PET_GENDER, mGender);
         values.put(PetContract.PetEntry.COLUMN_PET_WEIGHT, weight );
 
-        long newRowId = db.insert(PetContract.PetEntry.TABLE_NAME, null, values);
+        getContentResolver().insert(PetEntry.CONTENT_URI, values);
 
-        Toast.makeText(this, "Pet saved with row id:" + newRowId, Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Pet saved ", Toast.LENGTH_SHORT).show();
     }
 
     @Override
